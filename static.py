@@ -22,3 +22,12 @@ background = pygame.image.load("images/background.png")
 exit_image = pygame.image.load("images/exit_button.png")
 settings_image = pygame.image.load("images/settings_button.png")
 
+current_screen = 1
+current_screen_dict ={
+    1: "start_screen",
+    2: "play_screen",
+    3: "camera_setup_screen",
+    4: "leaderboard_screen",
+    5: "settings_screen"
+}
+
