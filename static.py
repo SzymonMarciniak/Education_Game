@@ -23,11 +23,16 @@ exit_image = pygame.image.load("images/exit_button.png")
 settings_image = pygame.image.load("images/settings_button.png")
 
 current_screen = 1
-current_screen_dict ={
+current_screen_dict ={ #if you substract key-10 you go to the previous page
     1: "start_screen",
-    2: "play_screen",
-    3: "camera_setup_screen",
-    4: "leaderboard_screen",
-    5: "settings_screen"
+    11: "play_screen",
+    12: "camera_setup_screen",
+    13: "leaderboard_screen",
+    21: "classes_screen",
+    31: "levels_screen",
+    100: "settings_screen" #exception
 }
+
+choosen_category = None
+buttons = []
 

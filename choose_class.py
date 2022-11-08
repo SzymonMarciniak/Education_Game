@@ -1,10 +1,10 @@
-import pygame
+import pygame 
 import pygame_gui
 
 from utils import set_text
 from static import *
 
-class StartScreen:
+class ChooseClass:
     def __init__(self) -> None:
         self.if_first_time() 
 
@@ -12,15 +12,7 @@ class StartScreen:
     def if_first_time(self):
         self.first_time = True 
 
-    def start_front(self, screen):
-        """
-        Function responsible for build or refresh start screen
-
-        Params
-        ------
-        screen: Surface
-            Game main screen
-        """
+    def build_front(self, screen):
         screen_w, screen_h = screen.get_width(), screen.get_height()
         button_w, button_h = (screen.get_width()/3) ,(screen.get_height()/11)
 
@@ -33,20 +25,18 @@ class StartScreen:
         main_text = set_text("Education Game", (screen_w/2), screen_h/9, main_text_size)
 
         manager = pygame_gui.UIManager((screen_w, screen_h))
-        play_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(((screen_w/2)-(button_w/2), (screen_h/2)-(button_h)), (button_w, button_h)),
-                                                    text='Play',
-                                                    manager=manager)
+        class1_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(((screen_w/2)-(button_w/2), (screen_h/2)-(button_h)), (button_w, button_h)),
+                                                    text='Klasa 1',manager=manager)
 
-        camera_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(((screen_w/2)-(button_w/2), (screen_h/2)+(button_h/2)), (button_w, button_h)),
-                                                    text='Camera setup',
-                                                    manager=manager)
+        class2_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(((screen_w/2)-(button_w/2), (screen_h/2)+(button_h/2)), (button_w, button_h)),
+                                                    text='Klasa 2',manager=manager)
 
-        leaderboard_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(((screen_w/2)-(button_w/2), (screen_h/2)+(button_h*2)), (button_w, button_h)),
-                                                    text='Leaderboard',
-                                                    manager=manager)
-
-        exit_image = pygame.image.load("images/exit_button.png")
+        class3_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(((screen_w/2)-(button_w/2), (screen_h/2)+(button_h*2)), (button_w, button_h)),
+                                                    text='Klasa 3', manager=manager) 
+                                                    
+        exit_image = pygame.image.load("images/return_button.png")
         settings_image = pygame.image.load("images/settings_button.png")
+
         btns_pos = 4
         if not is_fullscreen():
             exit_image = pygame.transform.scale(exit_image, (8*vw, 8*vw))
@@ -61,11 +51,12 @@ class StartScreen:
 
         if self.first_time == True:
             self.first_time = False 
-            buttons.extend((play_button, camera_button, leaderboard_button))
+            buttons.extend((class1_button, class2_button, class3_button))
 
-        return play_button, camera_button, leaderboard_button, manager, background, \
+        return class1_button, class2_button, class3_button, manager, background, \
             screen_w, screen_h, main_text, exit_image_rect, exit_image, settings_image_rect, settings_image
-    
+        
     def clear_front(self, *objects):
         for object in objects:
             object.kill()
+     

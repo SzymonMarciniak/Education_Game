@@ -9,3 +9,7 @@ def set_text(string, coordx, coordy, fontSize, color=(0,0,0)):
     textRect = text.get_rect()
     textRect.center = (coordx, coordy) 
     return (text, textRect)
+
+def clear_front(*objects):
+    for object in objects:
+        object.kill()

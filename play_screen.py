@@ -6,7 +6,11 @@ from static import *
 
 class PlayScreen:
     def __init__(self) -> None:
-        pass 
+        self.if_first_time()
+
+    @classmethod
+    def if_first_time(self):
+        self.first_time = True 
 
     def start_front(self,screen):
         screen_w, screen_h = screen.get_width(), screen.get_height()
@@ -44,6 +48,10 @@ class PlayScreen:
 
         settings_image_rect = settings_image.get_rect()
         settings_image_rect.center = screen_w - btns_pos*vw, screen_h - btns_pos*vw
+
+        if self.first_time == True:
+            self.first_time = False 
+            buttons.extend((math_button, polish_button, english_button))
 
         return math_button, polish_button, english_button, manager, background, \
             screen_w, screen_h, main_text, exit_image_rect, exit_image, settings_image_rect, settings_image

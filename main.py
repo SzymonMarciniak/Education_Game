@@ -5,9 +5,11 @@ from static import *
 from utils import * 
 from start_screen import StartScreen
 from play_screen import PlayScreen
+from choose_class import ChooseClass
 
 start_screen = StartScreen()
 play_screen = PlayScreen()
+class_screen = ChooseClass()
 
 pygame.init()
 pygame.font.init()
@@ -18,8 +20,8 @@ def build_proper_images():
         screen.blit(main_text[0], main_text[1])
         screen.blit(exit_image, exit_image_rect)
         screen.blit(settings_image, settings_image_rect)
-
-    elif current_screen_dict[current_screen] == "play_screen":
+    
+    elif (current_screen_dict[current_screen] == "play_screen") or (current_screen_dict[current_screen] == "classes_screen"):
         screen.blit(main_text[0], main_text[1])
         screen.blit(settings_image, settings_image_rect)
         screen.blit(exit_image, exit_image_rect)
@@ -40,18 +42,28 @@ def build_play_screen(screen):
             screen_w, screen_h, main_text, exit_image_rect, exit_image, \
             settings_image_rect, settings_image = play_screen.start_front(screen)
 
+def build_class_screen(screen):
+    global class1_button, class2_button, class3_button, manager, background, \
+            screen_w, screen_h, main_text, exit_image_rect, exit_image, settings_image_rect, settings_image
+
+    class1_button, class2_button, class3_button, manager, background, \
+            screen_w, screen_h, main_text, exit_image_rect, exit_image, settings_image_rect, settings_image = class_screen.build_front(screen)
+
 def build_proper_widgets(screen):
-    start_screen.clear_front(camera_button, leaderboard_button, play_button)
-    try:
-        play_screen.clear_front(math_button, polish_button, english_button)
-    except: pass
+    for button in buttons:
+        try:
+            clear_front(button)
+        except: print(button) 
+
     if current_screen_dict[current_screen] == "start_screen":
         build_start_screen(screen)
     elif current_screen_dict[current_screen] == "play_screen":
         build_play_screen(screen)
+    elif current_screen_dict[current_screen] == "classes_screen":
+        build_class_screen(screen)
 
 running = True
-while running:
+while running: #Main loop
     screen.fill(BLACK)
     screen.blit(background, (0,0))
 
@@ -74,26 +86,42 @@ while running:
                     
         if event.type == pygame.USEREVENT: #On user event
             if event.user_type == pygame_gui.UI_BUTTON_PRESSED:
+
                 if event.ui_element == play_button:
-                    current_screen = 2
+                    current_screen = 11
                     build_play_screen(screen)
-                if event.ui_element == camera_button:
+                elif event.ui_element == camera_button:
                     print('Camera setup!')
-                if event.ui_element == leaderboard_button:
+                elif event.ui_element == leaderboard_button:
                     print('Leaderboard!')
-                if event.ui_element == math_button:
-                    print('Math!')
-                if event.ui_element == english_button:
-                    print('English!')
-                if event.ui_element == polish_button:
-                    print('Polish!')
+
+                elif event.ui_element == math_button:
+                    current_screen = 21
+                    choosen_category = "math"
+                    build_class_screen(screen)
+                elif event.ui_element == english_button:
+                    current_screen = 21
+                    choosen_category = "english"
+                    build_class_screen(screen)
+                elif event.ui_element == polish_button:
+                    current_screen = 21
+                    choosen_category = "polish"
+                    build_class_screen(screen)
+
+                elif event.ui_element == class1_button:
+                    current_screen = 31
+                elif event.ui_element == class2_button:
+                    current_screen = 31
+                elif event.ui_element == class3_button:
+                    current_screen = 31
+                
 
         if event.type == pygame.MOUSEBUTTONDOWN: #If clicked on image
             if exit_image_rect.collidepoint(event.pos):
                 if current_screen_dict[current_screen] == "start_screen":
                     running = False
                 else: 
-                    current_screen -= 1
+                    current_screen -= 10
                     build_proper_widgets(screen)
             if settings_image_rect.collidepoint(event.pos):
                 print("Open settings")
