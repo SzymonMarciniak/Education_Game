@@ -49,9 +49,8 @@ class ChooseClass:
         settings_image_rect = settings_image.get_rect()
         settings_image_rect.center = screen_w - btns_pos*vw, screen_h - btns_pos*vw
 
-        if self.first_time == True:
-            self.first_time = False 
-            buttons.extend((class1_button, class2_button, class3_button))
+        
+        buttons.extend((class1_button, class2_button, class3_button))
 
         return class1_button, class2_button, class3_button, manager, background, \
             screen_w, screen_h, main_text, exit_image_rect, exit_image, settings_image_rect, settings_image

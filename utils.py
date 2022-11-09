@@ -10,6 +10,5 @@ def set_text(string, coordx, coordy, fontSize, color=(0,0,0)):
     textRect.center = (coordx, coordy) 
     return (text, textRect)
 
-def clear_front(*objects):
-    for object in objects:
-        object.kill()
+def clear_front(object):
+    object.kill()

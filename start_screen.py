@@ -59,9 +59,7 @@ class StartScreen:
         settings_image_rect = settings_image.get_rect()
         settings_image_rect.center = screen_w - btns_pos*vw, screen_h - btns_pos*vw
 
-        if self.first_time == True:
-            self.first_time = False 
-            buttons.extend((play_button, camera_button, leaderboard_button))
+        buttons.extend((play_button, camera_button, leaderboard_button))
 
         return play_button, camera_button, leaderboard_button, manager, background, \
             screen_w, screen_h, main_text, exit_image_rect, exit_image, settings_image_rect, settings_image

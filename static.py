@@ -34,5 +34,6 @@ current_screen_dict ={ #if you substract key-10 you go to the previous page
 }
 
 choosen_category = None
+choosen_class = None
 buttons = []
 
