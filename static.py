@@ -30,10 +30,14 @@ current_screen_dict ={ #if you substract key-10 you go to the previous page
     13: "leaderboard_screen",
     21: "classes_screen",
     31: "levels_screen",
+    41: "game_screen",
     100: "settings_screen" #exception
 }
 
 choosen_category = None
 choosen_class = None
 buttons = []
+digits_rect = []
+digits_id = []
+
 

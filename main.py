@@ -1,5 +1,6 @@
 import pygame
 import pygame_gui
+import time 
 
 from static import *
 from utils import * 
@@ -7,16 +8,20 @@ from start_screen import StartScreen
 from play_screen import PlayScreen
 from choose_class import ChooseClass
 from levels_screen import LevelsScreen 
+from game_screen import StartGame
 
 start_screen = StartScreen()
 play_screen = PlayScreen()
 class_screen = ChooseClass()
 levels_screen = LevelsScreen()
+game_screen = StartGame()
 
 pygame.init()
 pygame.font.init()
 pygame.display.set_caption('Education Game')
 
+last_time = 0
+queue = []
 def build_proper_images():
     if current_screen_dict[current_screen] == "start_screen":
         screen.blit(main_text[0], main_text[1])
@@ -28,6 +33,28 @@ def build_proper_images():
         screen.blit(main_text[0], main_text[1])
         screen.blit(settings_image, settings_image_rect)
         screen.blit(exit_image, exit_image_rect)
+    
+    elif current_screen_dict[current_screen] == "game_screen":
+        global last_time, queue
+        now = time.time()
+        for nr, digit in enumerate(digits_btn):
+            digict_rect = digits_rect[nr-1]
+            previous_x, previous_y = digict_rect.center
+            if previous_y > screen_h+screen.get_width()/16:
+                if abs(last_time-now) > 1:
+                    if digit not in queue:
+                        previous_y = 0
+                        game_screen.set_xy_pos(digict_rect)
+                        last_time = time.time()
+                        queue.append(digit)
+                        if len(queue) == 10:
+                            queue = []
+            else:
+                digict_rect.center = previous_x, previous_y+2
+            screen.blit(digit, digits_rect[nr])
+        screen.blit(question_text[0], question_text[1])
+        
+            
 
 def build_start_screen(screen):
     global play_button, camera_button, leaderboard_button, manager, background, \
@@ -59,6 +86,10 @@ def build_levels_screen(screen):
     levels_buttons, manager, background, \
             screen_w, screen_h, main_text, exit_image_rect, exit_image, settings_image_rect, settings_image = levels_screen.build_front(screen)
 
+def build_game_screen(screen):
+    global question_text, digits_btn
+    question_text, digits_btn = game_screen.build_front(screen) 
+
 def build_proper_widgets(screen):
     for button in buttons:
         try:
@@ -74,6 +105,8 @@ def build_proper_widgets(screen):
         build_class_screen(screen)
     elif current_screen_dict[current_screen] == "levels_screen":
         build_levels_screen(screen) 
+    elif current_screen_dict[current_screen] == "game_screen":
+        build_game_screen(screen)
 
 running = True
 while running: #Main loop
@@ -129,17 +162,25 @@ while running: #Main loop
 
                 elif event.ui_element in levels_buttons:
                     print(f"Przycisk nr: {event.ui_element.text} --- kategoria: {choosen_category} --- klasa: {choosen_class}")
+                    current_screen = 41
                 build_proper_widgets(screen)
 
         if event.type == pygame.MOUSEBUTTONDOWN: #If clicked on image
             if exit_image_rect.collidepoint(event.pos):
-                if current_screen_dict[current_screen] == "start_screen":
-                    running = False
-                else: 
-                    current_screen -= 10
-                    build_proper_widgets(screen)
+                if current_screen_dict[current_screen] != "game_screen":
+                    if current_screen_dict[current_screen] == "start_screen":
+                        running = False
+                    else: 
+                        current_screen -= 10
+                        build_proper_widgets(screen)
             if settings_image_rect.collidepoint(event.pos):
-                print("Open settings")
+                if current_screen_dict[current_screen] != "game_screen":
+                    print("Open settings")
+            
+            if current_screen_dict[current_screen] == "game_screen":
+                for nr, digit in enumerate(digits_rect):
+                    if digit.collidepoint(event.pos): 
+                        print(f"You clicked digit: {digits_id[nr]}")
     
         manager.process_events(event)
     manager.update(time_delta)
