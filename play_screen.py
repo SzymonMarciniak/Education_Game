@@ -3,6 +3,7 @@ import pygame_gui
 
 from utils import set_text
 from static import *
+from pygame_gui.core import ObjectID
 
 class PlayScreen:
     def __init__(self) -> None:
@@ -24,15 +25,27 @@ class PlayScreen:
         main_text_size = 50 if not is_fullscreen() else 100
         main_text = set_text("Education Game", (screen_w/2), screen_h/9, main_text_size)
 
-        manager = pygame_gui.UIManager((screen_w, screen_h))
+        manager = pygame_gui.UIManager((screen_w, screen_h),'style/menu_screen.json')
+
+        if not is_fullscreen():
+            button_style='#button_notfullscreen'
+        else:
+            button_style='#button_fullscreen'
+
         math_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(((screen_w/2)-(button_w/2), (screen_h/2)-(button_h)), (button_w, button_h)),
-                                                    text='Matematyka',manager=manager)
+                                                    text='Matematyka',
+                                                    manager=manager,
+                                                    object_id=ObjectID(class_id=button_style,object_id='@red'))
 
         polish_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(((screen_w/2)-(button_w/2), (screen_h/2)+(button_h/2)), (button_w, button_h)),
-                                                    text='Polski',manager=manager)
+                                                    text='Polski',
+                                                    manager=manager,
+                                                    object_id=ObjectID(class_id=button_style,object_id='@orange'))
 
         english_button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(((screen_w/2)-(button_w/2), (screen_h/2)+(button_h*2)), (button_w, button_h)),
-                                                    text='Angielski', manager=manager) 
+                                                    text='Angielski',
+                                                    manager=manager,
+                                                    object_id=ObjectID(class_id=button_style,object_id='@green')) 
                                                     
         exit_image = pygame.image.load("images/return_button.png")
         settings_image = pygame.image.load("images/settings_button.png")
