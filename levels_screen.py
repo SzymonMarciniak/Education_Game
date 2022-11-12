@@ -3,6 +3,7 @@ import pygame_gui
 
 from utils import set_text
 from static import *
+from pygame_gui.core import ObjectID
 
 class LevelsScreen:
     def __init__(self) -> None:
@@ -25,7 +26,7 @@ class LevelsScreen:
         main_text_size = 50 if not is_fullscreen() else 100
         main_text = set_text("Education Game", (screen_w/2), screen_h/9, main_text_size)
 
-        manager = pygame_gui.UIManager((screen_w, screen_h))
+        manager = pygame_gui.UIManager((screen_w, screen_h),'style/levels_screen.json')
 
         levels_buttons = []
 
@@ -44,9 +45,13 @@ class LevelsScreen:
             if ((i-1) % 8 == 0) and (i-1!=0):
                 pos_y += button_h + space_y
                 w = 0
+            if not is_fullscreen():
+                button_style='#level_button_notfullscreen'
+            else:
+                button_style='#level_button_fullscreen'
             pos_x = (12*vw + w*(button_w+space_x))
             button = pygame_gui.elements.UIButton(relative_rect=pygame.Rect(((pos_x, pos_y)), (button_w, button_h)),
-                                                    text=str(i),manager=manager)
+                                                    text=str(i),manager=manager,object_id=ObjectID(class_id=button_style))
             levels_buttons.append(button)
                                                     
         exit_image = pygame.image.load("images/return_button.png")
