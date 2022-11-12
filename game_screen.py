@@ -1,5 +1,4 @@
 import pygame 
-import pygame_gui
 import os 
 import re
 import random
@@ -10,22 +9,29 @@ from static import *
 class StartGame:
     def __init__(self) -> None:
         self.available_place = [x for x in range(1,11)] 
+        self.questions = {
+            1: ["7 + 2", 9],
+            2: ["1 + 2", 3],
+            3: ["4 + 5", 9],
+            4: ["4 + 2", 6],
+            5: ["1 + 1", 2],
+            6: ["7 - 2", 5]
+        }
+        self.actual_question = 0
 
     def build_front(self,screen):
         screen_w, screen_h = screen.get_width(), screen.get_height()
         digit_w, digit_h = (screen.get_width()/10) ,(screen.get_width()/10) #cube
 
         vw = screen_w/100
-        vh = screen_h/100
-
-        manager = pygame_gui.UIManager((screen_w, screen_h))
-        
         background = pygame.image.load("images/background.png")
         background = pygame.transform.scale(background, (screen_w, screen_h))
 
         question_text_size = 50 if not is_fullscreen() else 100
         question_text = set_text("5 + 2", (screen_w/2), screen_h/9, question_text_size)
-        solution = "7"
+
+        points_text_size = 40 if not is_fullscreen() else 80
+        points_text = set_text(str(points), 3*vw, 3*vw, points_text_size)
 
         path = "images"
         digits = os.listdir(path)
@@ -43,7 +49,7 @@ class StartGame:
             digit_rect = digit_img.get_rect()
             self.set_xy_pos(digit_rect, new=True, y=screen_h+digit_h+100)
         
-        return question_text, digits_btn
+        return question_text, points_text, digits_btn
     
     def set_xy_pos(self, digit_rect, y=-(screen.get_width()/10), new=False):
         x_pos = random.choice(self.available_place)
@@ -54,4 +60,14 @@ class StartGame:
             digits_rect.append(digit_rect)
         if len(self.available_place) == 0:
             self.available_place = [x for x in range(1,11)] 
+    
+    def new_question(self):
+        self.actual_question += 1
+        my_set = self.questions[self.actual_question]
+        quest, answer = my_set[0], my_set[1]
+        solution = str(answer)
+        screen_w, screen_h = screen.get_width(), screen.get_height()
+        question_text_size = 50 if not is_fullscreen() else 100
+        question_text = set_text(str(quest), (screen_w/2), screen_h/9, question_text_size)
+        return question_text, solution
  

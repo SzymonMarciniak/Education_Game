@@ -39,5 +39,7 @@ choosen_class = None
 buttons = []
 digits_rect = []
 digits_id = []
+points = 0
+solution = "7"
 
 

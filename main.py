@@ -53,6 +53,7 @@ def build_proper_images():
                 digict_rect.center = previous_x, previous_y+2
             screen.blit(digit, digits_rect[nr])
         screen.blit(question_text[0], question_text[1])
+        screen.blit(points_text[0], points_text[1])
         
             
 
@@ -87,8 +88,8 @@ def build_levels_screen(screen):
             screen_w, screen_h, main_text, exit_image_rect, exit_image, settings_image_rect, settings_image = levels_screen.build_front(screen)
 
 def build_game_screen(screen):
-    global question_text, digits_btn
-    question_text, digits_btn = game_screen.build_front(screen) 
+    global question_text, digits_btn, points_text
+    question_text, points_text, digits_btn = game_screen.build_front(screen) 
 
 def build_proper_widgets(screen):
     for button in buttons:
@@ -181,6 +182,17 @@ while running: #Main loop
                 for nr, digit in enumerate(digits_rect):
                     if digit.collidepoint(event.pos): 
                         print(f"You clicked digit: {digits_id[nr]}")
+                        digit.center = 0, screen_h + (screen.get_width()/10) + 100
+                        if str(digits_id[nr]) == solution:
+                            points += 1
+                            question_text, sol = game_screen.new_question()
+                            solution = sol
+                        else:
+                            if points != -9:
+                                points -= 1
+                        points_text_size = 40 if not is_fullscreen() else 80
+                        vw = screen_w/100
+                        points_text = set_text(str(points), 3*vw, 3*vw, points_text_size)
     
         manager.process_events(event)
     manager.update(time_delta)
