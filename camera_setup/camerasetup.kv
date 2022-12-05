@@ -47,6 +47,26 @@
             pos_hint: {"x": 0, "y":0}
 
         CameraView:
+            transparent_gray: (100/255, 100/255, 100/255, .6)
+            canvas.after:
+                Color: 
+                    rgba: self.transparent_gray
+                Rectangle:
+                    id: leftRect
+                    pos: self.pos
+                    size: (self.size[0] * .45 * root.left_val) - (self.size[0] * .45), self.size[1]
+                Rectangle:
+                    id: rightRect
+                    pos: self.pos[0] * 3.86, self.pos[1]
+                    size: (self.size[0] * .45 * root.right_val * -1) + (self.size[0] * .45), self.size[1]
+                Rectangle:
+                    id: topRect
+                    pos: self.size[0] * .45 * 1.5, self.pos[1]
+                    size: self.size[0] , self.size[1] * .45
+                # Rectangle:
+                #     id: bottomRect
+                #     pos: self.pos
+                #     size: self.size[0] * .45, self.size[1]
             id: my_cam
             source: root.my_img
             
@@ -56,7 +76,7 @@
 
             Slider:
                 id: top_slider
-                min: 0
+                min: 1
                 max: 100
                 step: 1
                 orientation: 'vertical'
@@ -65,7 +85,7 @@
 
             Slider:
                 id: bottom_slider
-                min: 0
+                min: 1
                 max: 100
                 step: 1
                 orientation: 'vertical'
@@ -79,16 +99,17 @@
         RelativeLayout:
             Slider:
                 id: left_slider
-                min: 0
+                min: 1
                 max: 100
                 step: 1
                 orientation: 'horizontal'
                 pos: .63 * self.size[0], (6 * self.size[1])
                 size_hint_y: .1
                 size_hint_x: .3
+                on_value: root.change_left_image_area(*args)
             Slider:
                 id: right_slider
-                min: 0
+                min: 1
                 max: 100
                 step: 1
                 orientation: 'horizontal'
@@ -96,6 +117,7 @@
                 size_hint_y: .1
                 size_hint_x: .3
                 value: 100
+                on_value: root.change_right_image_area(*args)
             
 
         RelativeLayout:

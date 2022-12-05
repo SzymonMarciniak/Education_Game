@@ -1,6 +1,6 @@
 from kivy.app import App
 from kivy.core.window import Window
-from kivy.properties import ListProperty, ObjectProperty, StringProperty
+from kivy.properties import ListProperty, ObjectProperty, StringProperty, NumericProperty
 import cv2
 from kivy.uix.image import Image
 from kivy.graphics.texture import Texture
@@ -22,6 +22,8 @@ class MainScreen(BoxLayout):
     available_cam_list = ListProperty(["0", "1", "2", "3", "4"])
     camera_view_parent = ObjectProperty()
     my_img = StringProperty("images/no_camera.jpg")
+    left_val = NumericProperty(1)
+    right_val = NumericProperty(1)
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -55,6 +57,17 @@ class MainScreen(BoxLayout):
             self.ids.my_cam.texture = texture
         else: 
             my_cam.source = "images/no_camera.jpg"
+
+    @staticmethod
+    def calcualte_value(val):
+        return 1 + int(val) / 100
+    
+    def change_left_image_area(self, *args):
+        self.left_val = self.calcualte_value(args[1])
+        
+    def change_right_image_area(self, *args):
+        self.right_val = self.calcualte_value(100 - args[1])
+        
     
     def save_and_exit(self):
         App.get_running_app().stop()
