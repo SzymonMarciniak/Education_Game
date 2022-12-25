@@ -24,9 +24,15 @@ class MainScreen(BoxLayout):
     my_img = StringProperty("images/no_camera.jpg")
     left_val = NumericProperty(1)
     right_val = NumericProperty(1)
+    top_val = NumericProperty(1)
+    bottom_val = NumericProperty(2)
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.procent_left_val = 0
+        self.procent_right_val = 0
+        self.procent_top_val = 0
+        self.procent_bottom_val = 0
         
     def search_cameras(self):
         self.available_cam_list = CameraView.check_available_cameras()
@@ -62,11 +68,28 @@ class MainScreen(BoxLayout):
     def calcualte_value(val):
         return 1 + int(val) / 100
     
+    def print_values(self):
+        print(f"Left: {self.procent_left_val}\nRight: {self.procent_right_val}\nTop: {self.procent_bottom_val}\nBottom: {self.procent_top_val}")
+    
     def change_left_image_area(self, *args):
         self.left_val = self.calcualte_value(args[1])
+        self.procent_left_val = (self.left_val - 1) * .45
+        self.print_values()
         
     def change_right_image_area(self, *args):
         self.right_val = self.calcualte_value(100 - args[1])
+        self.procent_right_val = (self.right_val - 1) * .45
+        self.print_values()
+
+    def change_top_image_area(self, *args):
+        self.top_val = self.calcualte_value(args[1])
+        self.procent_top_val = (self.top_val - 1) * .45
+        self.print_values()
+    
+    def change_bottom_image_area(self, *args):
+        self.bottom_val = self.calcualte_value(args[1])
+        self.procent_bottom_val = (2 - self.bottom_val) * .45
+        self.print_values()
         
     
     def save_and_exit(self):

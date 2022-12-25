@@ -61,12 +61,12 @@
                     size: (self.size[0] * .45 * root.right_val * -1) + (self.size[0] * .45), self.size[1]
                 Rectangle:
                     id: topRect
-                    pos: self.size[0] * .45 * 1.5, self.pos[1]
-                    size: self.size[0] , self.size[1] * .45
-                # Rectangle:
-                #     id: bottomRect
-                #     pos: self.pos
-                #     size: self.size[0] * .45, self.size[1]
+                    pos: (self.size[0] * .45 * root.left_val) - (self.size[0] * .1), self.pos[1]
+                    size: self.size[0] - ((self.size[0] * .45 * root.left_val) - (self.size[0] * .45)) + ((self.size[0] * .4493 * root.right_val * -1) + (self.size[0] * .45)), self.size[1] * .45 * root.top_val - (self.size[1] * .45)
+                Rectangle:
+                    id: bottomRect
+                    pos: (self.size[0] * .45 * root.left_val) - (self.size[0] * .1), self.pos[1] * 1.2  + (self.size[1] * .45 * root.bottom_val)
+                    size: self.size[0] - ((self.size[0] * .45 * root.left_val) - (self.size[0] * .45)) + ((self.size[0] * .4493 * root.right_val * -1) + (self.size[0] * .45)) , 2.09 * self.size[1] * .45 - (self.size[1] * .45 * root.bottom_val)
             id: my_cam
             source: root.my_img
             
@@ -82,6 +82,7 @@
                 orientation: 'vertical'
                 pos: - .5*(self.size[0]) + 30, 0
                 size_hint_y: .5
+                on_value: root.change_top_image_area(*args)
 
             Slider:
                 id: bottom_slider
@@ -92,6 +93,7 @@
                 pos: - .5*(self.size[0]) + 30, self.size[1] 
                 size_hint_y: .5
                 value: 100
+                on_value: root.change_bottom_image_area(*args)
             
     BoxLayout:
         orientation: "vertical"
