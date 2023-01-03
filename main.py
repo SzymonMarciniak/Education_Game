@@ -1,6 +1,7 @@
 import pygame
 import pygame_gui
 import time 
+import subprocess
 
 from static import *
 from utils import * 
@@ -9,12 +10,14 @@ from play_screen import PlayScreen
 from choose_class import ChooseClass
 from levels_screen import LevelsScreen 
 from game_screen import StartGame
+from minigames.math_games import Mathematic
 
 start_screen = StartScreen()
 play_screen = PlayScreen()
 class_screen = ChooseClass()
 levels_screen = LevelsScreen()
 game_screen = StartGame()
+math_games = Mathematic()
 
 pygame.init()
 pygame.font.init()
@@ -22,6 +25,7 @@ pygame.display.set_caption('Education Game')
 
 last_time = 0
 queue = []
+camera_setup_open = False 
 def build_proper_images():
     if current_screen_dict[current_screen] == "start_screen":
         screen.blit(main_text[0], main_text[1])
@@ -36,22 +40,8 @@ def build_proper_images():
     
     elif current_screen_dict[current_screen] == "game_screen":
         global last_time, queue
-        now = time.time()
-        for nr, digit in enumerate(digits_btn):
-            digict_rect = digits_rect[nr-1]
-            previous_x, previous_y = digict_rect.center
-            if previous_y > screen_h+screen.get_width()/16:
-                if abs(last_time-now) > 1:
-                    if digit not in queue:
-                        previous_y = 0
-                        game_screen.set_xy_pos(digict_rect)
-                        last_time = time.time()
-                        queue.append(digit)
-                        if len(queue) == 10:
-                            queue = []
-            else:
-                digict_rect.center = previous_x, previous_y+2
-            screen.blit(digit, digits_rect[nr])
+        queue = math_games.refresh_digits(screen, digits_btn, screen_h, queue)
+
         screen.blit(question_text[0], question_text[1])
         screen.blit(points_text[0], points_text[1])
         
@@ -88,8 +78,11 @@ def build_levels_screen(screen):
             screen_w, screen_h, main_text, exit_image_rect, exit_image, settings_image_rect, settings_image = levels_screen.build_front(screen)
 
 def build_game_screen(screen):
-    global question_text, digits_btn, points_text
-    question_text, points_text, digits_btn = game_screen.build_front(screen) 
+    global question_text, digits_btn, points_text, first_solution
+    first_question, solution = math_games.get_questions(choosen_class, choosen_lvl)[1]
+    first_solution = str(solution)
+    question_text, points_text, digits_btn = game_screen.build_front(screen, first_question) 
+    
 
 def build_proper_widgets(screen):
     for button in buttons:
@@ -137,7 +130,10 @@ while running: #Main loop
                 if event.ui_element == play_button:
                     current_screen = 11
                 elif event.ui_element == camera_button:
-                    print('Camera setup!')
+                    if not camera_setup_open: #cso to db
+                        subprocess.Popen(["python", "camera_setup/camera.py", "1"])
+                        camera_setup_open = True
+                    
                 elif event.ui_element == leaderboard_button:
                     print('Leaderboard!')
 
@@ -162,7 +158,8 @@ while running: #Main loop
                     choosen_class = 3
 
                 elif event.ui_element in levels_buttons:
-                    print(f"Przycisk nr: {event.ui_element.text} --- kategoria: {choosen_category} --- klasa: {choosen_class}")
+                    choosen_lvl = event.ui_element.text
+                    print(f"Przycisk nr: {choosen_lvl} --- kategoria: {choosen_category} --- klasa: {choosen_class}")
                     current_screen = 41
                 build_proper_widgets(screen)
 
@@ -179,20 +176,14 @@ while running: #Main loop
                     print("Open settings")
             
             if current_screen_dict[current_screen] == "game_screen":
-                for nr, digit in enumerate(digits_rect):
-                    if digit.collidepoint(event.pos): 
-                        print(f"You clicked digit: {digits_id[nr]}")
-                        digit.center = 0, screen_h + (screen.get_width()/10) + 100
-                        if str(digits_id[nr]) == solution:
-                            points += 1
-                            question_text, sol = game_screen.new_question()
-                            solution = sol
-                        else:
-                            if points != -9:
-                                points -= 1
-                        points_text_size = 40 if not is_fullscreen() else 80
-                        vw = screen_w/100
-                        points_text = set_text(str(points), 3*vw, 3*vw, points_text_size)
+                if choosen_category == "math":
+                    if solution == None: solution = first_solution
+                    question_text, solution, points = math_games.selecting_digit(screen, event, game_screen, screen_h, question_text, solution, points)
+
+
+                    vw = screen_w/100
+                    points_text_size = 40 if not is_fullscreen() else 80
+                    points_text = set_text(str(points), 3*vw, 3*vw, points_text_size)
     
         manager.process_events(event)
     manager.update(time_delta)

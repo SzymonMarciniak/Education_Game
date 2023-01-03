@@ -36,10 +36,11 @@ current_screen_dict ={ #if you substract key-10 you go to the previous page
 
 choosen_category = None
 choosen_class = None
+choosen_lvl = None
 buttons = []
 digits_rect = []
 digits_id = []
 points = 0
-solution = "7"
+solution = None
 
 
